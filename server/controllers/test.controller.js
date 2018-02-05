@@ -1,32 +1,8 @@
-function date (req, res){
-    const date = req.params.date;
-    const dateFormat = {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    };
-    let natDate = null;
-    let unixDate = null;
-    if (isNaN(date)){
-        natDate = new Date(date);
-        natDate = natDate.toLocaleDateString('en-us', dateFormat);
-        unixDate = Math.round((new Date(date)).getTime()/1000);
-        if(unixDate < 0){
-            unixDate = null;
-        }
-        if (natDate === "Invalid Date"){
-            natDate = null;
-        }
-    }
-    if(!isNaN(date)){
-        unixDate = date;
-        natDate = new Date(date*1000);
-        natDate = natDate.toLocaleDateString('en-us', dateFormat);
-        if(unixDate < 0){
-            unixDate = null;
-        }
-    }
-    return res.json({"unix": unixDate, "natural": natDate});
+function information (req, res){
+    const ipInfo = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+    const langInfo = req.headers['accept-language'].split(',')[0];
+    const softwareInfo = req.headers['user-agent'].split(') ')[0].split(' (')[1];
+    return res.json({"ip address": ipInfo,"language": langInfo, "software": softwareInfo});
 }
 
-export default { date };
+export default { information };
